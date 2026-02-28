@@ -23,11 +23,6 @@ public class PracticeController {
         return "index";
     }
 
-    @GetMapping("/history")
-    public String history() {
-        return "history";
-    }
-
     @GetMapping("/api/problem")
     @ResponseBody
     public ProblemResponse nextProblem() {

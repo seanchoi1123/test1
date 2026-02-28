@@ -27,27 +27,6 @@
             padding: 28px;
         }
 
-        .menu {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 14px;
-        }
-
-        .menu a {
-            text-decoration: none;
-            color: #0f172a;
-            background: #e2e8f0;
-            padding: 8px 12px;
-            border-radius: 999px;
-            font-size: 0.9rem;
-            font-weight: 600;
-        }
-
-        .menu a.active {
-            background: #2563eb;
-            color: #fff;
-        }
-
         h1 {
             margin-top: 0;
             margin-bottom: 4px;
@@ -114,11 +93,6 @@
 </head>
 <body>
 <div class="app">
-    <nav class="menu">
-        <a class="active" href="/">암산 연습</a>
-        <a href="/history">이력 보기</a>
-    </nav>
-
     <h1>2자리수 곱셈 암산</h1>
     <p class="hint">10~99 사이 숫자 두 개를 보고 빠르게 곱해보세요.</p>
 
@@ -138,16 +112,9 @@
     const problemEl = document.getElementById('problem');
     const answerEl = document.getElementById('answer');
     const resultEl = document.getElementById('result');
-    const STORAGE_KEY = 'mentalMathHistory';
 
     let currentLeft = 0;
     let currentRight = 0;
-
-    function saveHistory(item) {
-        const previous = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-        previous.unshift(item);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(previous.slice(0, 100)));
-    }
 
     async function loadProblem() {
         const response = await fetch('/api/problem');
@@ -184,15 +151,6 @@
             ? `${data.message}`
             : `${data.message} 정답은 ${data.expected} 입니다.`;
         resultEl.className = data.correct ? 'ok' : 'bad';
-
-        saveHistory({
-            left: currentLeft,
-            right: currentRight,
-            answer,
-            expected: data.expected,
-            correct: data.correct,
-            createdAt: new Date().toISOString()
-        });
     }
 
     document.getElementById('checkBtn').addEventListener('click', checkAnswer);
