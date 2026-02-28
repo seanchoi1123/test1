@@ -6,162 +6,339 @@
     <title>2자리수 곱셈 암산 연습</title>
     <style>
         :root {
-            color-scheme: light;
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --success: #10b981;
+            --error: #ef4444;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #0f172a;
+                --card-bg: #1e293b;
+                --text-main: #f1f5f9;
+                --text-muted: #94a3b8;
+                --border: #334155;
+                --shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+            }
         }
 
         body {
-            font-family: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+            font-family: 'Inter', 'Pretendard', system-ui, -apple-system, sans-serif;
             margin: 0;
             min-height: 100vh;
-            display: grid;
-            place-items: center;
-            background: linear-gradient(120deg, #ecfeff, #eff6ff);
-            color: #0f172a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--bg);
+            color: var(--text-main);
+            transition: background-color 0.3s ease;
         }
 
-        .app {
-            width: min(520px, 92vw);
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.15);
-            padding: 28px;
+        .app-container {
+            width: min(480px, 92vw);
+            padding: 40px 20px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            padding: 32px;
+            text-align: center;
+            border: 1px solid var(--border);
+            transition: transform 0.2s ease;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 99px;
+            transition: all 0.2s;
+        }
+
+        nav a.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        nav a:not(.active):hover {
+            background-color: var(--border);
+            color: var(--text-main);
         }
 
         h1 {
-            margin-top: 0;
-            margin-bottom: 4px;
-            font-size: 1.6rem;
+            font-size: 1.75rem;
+            font-weight: 800;
+            margin: 0 0 8px 0;
+            letter-spacing: -0.025em;
         }
 
-        .hint {
-            margin-top: 0;
-            color: #475569;
+        .description {
+            color: var(--text-muted);
             font-size: 0.95rem;
+            margin-bottom: 40px;
         }
 
-        .problem {
-            margin: 24px 0;
-            font-size: 2rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-align: center;
+        .problem-box {
+            background: linear-gradient(135deg, var(--primary), #8b5cf6);
+            padding: 48px 24px;
+            border-radius: 20px;
+            margin-bottom: 32px;
+            color: white;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
         }
 
-        .controls {
-            display: flex;
-            gap: 10px;
+        .problem-text {
+            font-size: 3rem;
+            font-weight: 800;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 16px;
         }
 
         input[type="number"] {
-            flex: 1;
-            padding: 12px;
-            font-size: 1rem;
-            border: 1px solid #cbd5e1;
-            border-radius: 10px;
-        }
-
-        button {
-            border: none;
-            background: #2563eb;
-            color: white;
-            padding: 12px 16px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        button.secondary {
-            background: #0f766e;
-            margin-top: 12px;
             width: 100%;
+            box-sizing: border-box;
+            padding: 16px;
+            font-size: 1.25rem;
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            background-color: var(--card-bg);
+            color: var(--text-main);
+            text-align: center;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input[type="number"]:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+
+        /* Chrome, Safari, Edge, Opera - Remove arrows */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .primary-button {
+            width: 100%;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 16px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            margin-bottom: 12px;
+        }
+
+        .primary-button:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .primary-button:active {
+            transform: scale(0.98);
+        }
+
+        .secondary-button {
+            width: 100%;
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            padding: 14px;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .secondary-button:hover {
+            background-color: rgba(99, 102, 241, 0.05);
         }
 
         #result {
-            margin-top: 16px;
-            min-height: 24px;
+            margin-top: 24px;
+            padding: 16px;
+            border-radius: 12px;
             font-weight: 600;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
         }
 
-        .ok {
-            color: #166534;
+        #result.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
-        .bad {
-            color: #b91c1c;
+        .result-success {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .result-error {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--error);
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .shake {
+            animation: shake 0.2s ease-in-out 0s 2;
         }
     </style>
 </head>
 <body>
-<div class="app">
-    <h1>2자리수 곱셈 암산</h1>
-    <p class="hint">10~99 사이 숫자 두 개를 보고 빠르게 곱해보세요.</p>
+    <div class="app-container">
+        <nav>
+            <a href="/" class="active">연습하기</a>
+            <a href="/history">이력보기</a>
+        </nav>
 
-    <div id="problem" class="problem">문제 불러오는 중...</div>
+        <div class="card">
+            <h1>암산 챌린지</h1>
+            <p class="description">두 자리 수 곱셈을 얼마나 빨리 할 수 있나요?</p>
 
-    <div class="controls">
-        <input id="answer" type="number" placeholder="정답 입력" autocomplete="off">
-        <button id="checkBtn" type="button">채점</button>
+            <div class="problem-box">
+                <div id="problem" class="problem-text">...</div>
+            </div>
+
+            <div class="input-group">
+                <input id="answer" type="number" placeholder="정답을 입력하세요" autocomplete="off">
+            </div>
+
+            <button id="checkBtn" class="primary-button" type="button">채점하기</button>
+            <button id="nextBtn" class="secondary-button" type="button" style="display: none;">다음 문제</button>
+
+            <div id="result"></div>
+        </div>
     </div>
 
-    <button id="nextBtn" class="secondary" type="button">다음 문제</button>
+    <script>
+        const problemEl = document.getElementById('problem');
+        const answerEl = document.getElementById('answer');
+        const resultEl = document.getElementById('result');
+        const checkBtn = document.getElementById('checkBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const cardEl = document.querySelector('.card');
 
-    <div id="result"></div>
-</div>
+        let currentLeft = 0;
+        let currentRight = 0;
+        let isChecking = false;
 
-<script>
-    const problemEl = document.getElementById('problem');
-    const answerEl = document.getElementById('answer');
-    const resultEl = document.getElementById('result');
+        async function loadProblem() {
+            const response = await fetch('/api/problem');
+            const data = await response.json();
 
-    let currentLeft = 0;
-    let currentRight = 0;
+            currentLeft = data.left;
+            currentRight = data.right;
 
-    async function loadProblem() {
-        const response = await fetch('/api/problem');
-        const data = await response.json();
-
-        currentLeft = data.left;
-        currentRight = data.right;
-
-        problemEl.textContent = `${currentLeft} × ${currentRight} = ?`;
-        resultEl.textContent = '';
-        resultEl.className = '';
-        answerEl.value = '';
-        answerEl.focus();
-    }
-
-    async function checkAnswer() {
-        const answer = Number(answerEl.value);
-
-        if (!Number.isInteger(answer)) {
-            resultEl.textContent = '정수를 입력해주세요.';
-            resultEl.className = 'bad';
-            return;
+            problemEl.textContent = `${currentLeft} × ${currentRight}`;
+            
+            resultEl.className = '';
+            resultEl.textContent = '';
+            resultEl.classList.remove('visible');
+            
+            answerEl.value = '';
+            answerEl.disabled = false;
+            answerEl.focus();
+            
+            checkBtn.style.display = 'block';
+            nextBtn.style.display = 'none';
+            isChecking = false;
         }
 
-        const response = await fetch('/api/check', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({left: currentLeft, right: currentRight, answer})
+        async function checkAnswer() {
+            if (isChecking || !answerEl.value) return;
+            
+            const answer = Number(answerEl.value);
+            isChecking = true;
+
+            const response = await fetch('/api/check', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({left: currentLeft, right: currentRight, answer})
+            });
+
+            const data = await response.json();
+
+            // Save to history (Local Storage)
+            saveToHistory({
+                createdAt: new Date().toISOString(),
+                left: currentLeft,
+                right: currentRight,
+                answer,
+                expected: data.expected,
+                correct: data.correct
+            });
+
+            resultEl.textContent = data.correct
+                ? data.message
+                : `${data.message} 정답은 ${data.expected}입니다.`;
+            
+            resultEl.className = 'visible ' + (data.correct ? 'result-success' : 'result-error');
+            
+            if (!data.correct) {
+                cardEl.classList.add('shake');
+                setTimeout(() => cardEl.classList.remove('shake'), 400);
+            }
+
+            answerEl.disabled = true;
+            checkBtn.style.display = 'none';
+            nextBtn.style.display = 'block';
+            nextBtn.focus();
+        }
+
+        function saveToHistory(item) {
+            const history = JSON.parse(localStorage.getItem('mentalMathHistory') || '[]');
+            history.unshift(item); // Add to beginning
+            localStorage.setItem('mentalMathHistory', JSON.stringify(history.slice(0, 100))); // Keep last 100
+        }
+
+        checkBtn.addEventListener('click', checkAnswer);
+        nextBtn.addEventListener('click', loadProblem);
+        
+        answerEl.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                if (checkBtn.style.display !== 'none') {
+                    checkAnswer();
+                } else {
+                    loadProblem();
+                }
+            }
         });
 
-        const data = await response.json();
-
-        resultEl.textContent = data.correct
-            ? `${data.message}`
-            : `${data.message} 정답은 ${data.expected} 입니다.`;
-        resultEl.className = data.correct ? 'ok' : 'bad';
-    }
-
-    document.getElementById('checkBtn').addEventListener('click', checkAnswer);
-    document.getElementById('nextBtn').addEventListener('click', loadProblem);
-    answerEl.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter') {
-            checkAnswer();
-        }
-    });
-
-    loadProblem();
-</script>
+        // Initialize
+        loadProblem();
+    </script>
 </body>
 </html>

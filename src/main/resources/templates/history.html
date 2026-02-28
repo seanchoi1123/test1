@@ -3,176 +3,259 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>암산 이력</title>
+    <title>암산 풀이 이력</title>
     <style>
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --success: #10b981;
+            --error: #ef4444;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #0f172a;
+                --card-bg: #1e293b;
+                --text-main: #f1f5f9;
+                --text-muted: #94a3b8;
+                --border: #334155;
+                --shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+            }
+        }
+
         body {
-            font-family: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+            font-family: 'Inter', 'Pretendard', system-ui, -apple-system, sans-serif;
             margin: 0;
             min-height: 100vh;
-            display: grid;
-            place-items: center;
-            background: linear-gradient(120deg, #f8fafc, #ecfeff);
-            color: #0f172a;
-        }
-
-        .app {
-            width: min(760px, 94vw);
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12);
-            padding: 28px;
-        }
-
-        .menu {
             display: flex;
-            gap: 8px;
-            margin-bottom: 14px;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--bg);
+            color: var(--text-main);
+            transition: background-color 0.3s ease;
         }
 
-        .menu a {
+        .app-container {
+            width: min(720px, 94vw);
+            padding: 40px 20px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            padding: 32px;
+            border: 1px solid var(--border);
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        nav a {
             text-decoration: none;
-            color: #0f172a;
-            background: #e2e8f0;
-            padding: 8px 12px;
-            border-radius: 999px;
+            color: var(--text-muted);
             font-size: 0.9rem;
             font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 99px;
+            transition: all 0.2s;
         }
 
-        .menu a.active {
-            background: #2563eb;
-            color: #fff;
+        nav a.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        nav a:not(.active):hover {
+            background-color: var(--border);
+            color: var(--text-main);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
         }
 
         h1 {
-            margin: 0 0 12px;
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin: 0;
+            letter-spacing: -0.025em;
         }
 
-        .summary {
-            margin-bottom: 16px;
-            color: #334155;
-            font-size: 0.95rem;
+        .summary-text {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 24px;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             font-size: 0.95rem;
-        }
-
-        th, td {
-            text-align: left;
-            padding: 10px;
-            border-bottom: 1px solid #e2e8f0;
+            min-width: 450px;
         }
 
         th {
-            color: #475569;
-            font-weight: 700;
-            background: #f8fafc;
-        }
-
-        .ok {
-            color: #166534;
-            font-weight: 700;
-        }
-
-        .bad {
-            color: #b91c1c;
-            font-weight: 700;
-        }
-
-        .empty {
-            color: #64748b;
-            padding: 24px 4px;
-        }
-
-        .actions {
-            margin-top: 14px;
-        }
-
-        button {
-            border: none;
-            background: #dc2626;
-            color: white;
-            padding: 10px 14px;
-            border-radius: 8px;
-            cursor: pointer;
+            text-align: left;
+            padding: 12px;
+            color: var(--text-muted);
             font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 2px solid var(--border);
+        }
+
+        td {
+            padding: 16px 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .time-col { color: var(--text-muted); font-size: 0.85rem; }
+        .problem-col { font-weight: 700; font-variant-numeric: tabular-nums; }
+        
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 99px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .badge-success { background-color: rgba(16, 185, 129, 0.1); color: var(--success); }
+        .badge-error { background-color: rgba(239, 68, 68, 0.1); color: var(--error); }
+
+        .empty-state {
+            padding: 48px 0;
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        .btn-delete {
+            background: transparent;
+            color: var(--error);
+            border: 1px solid var(--error);
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-delete:hover {
+            background-color: var(--error);
+            color: white;
         }
     </style>
 </head>
 <body>
-<div class="app">
-    <nav class="menu">
-        <a href="/">암산 연습</a>
-        <a class="active" href="/history">이력 보기</a>
-    </nav>
+    <div class="app-container">
+        <nav>
+            <a href="/">연습하기</a>
+            <a href="/history" class="active">이력보기</a>
+        </nav>
 
-    <h1>풀이 이력</h1>
-    <p id="summary" class="summary">기록을 불러오는 중...</p>
+        <div class="card">
+            <div class="header">
+                <div>
+                    <h1>풀이 이력</h1>
+                </div>
+                <div id="summary" class="summary-text">기록을 불러오는 중...</div>
+            </div>
 
-    <table>
-        <thead>
-        <tr>
-            <th>시간</th>
-            <th>문제</th>
-            <th>내 답</th>
-            <th>정답</th>
-            <th>결과</th>
-        </tr>
-        </thead>
-        <tbody id="historyBody"></tbody>
-    </table>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>시간</th>
+                            <th>문제</th>
+                            <th>내 답</th>
+                            <th>정답</th>
+                            <th>결과</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyBody"></tbody>
+                </table>
+            </div>
 
-    <div class="actions">
-        <button id="clearBtn" type="button">이력 전체 삭제</button>
+            <div style="text-align: right;">
+                <button id="clearBtn" class="btn-delete" type="button">이력 전체 삭제</button>
+            </div>
+        </div>
     </div>
-</div>
 
-<script>
-    const STORAGE_KEY = 'mentalMathHistory';
-    const historyBody = document.getElementById('historyBody');
-    const summaryEl = document.getElementById('summary');
+    <script>
+        const STORAGE_KEY = 'mentalMathHistory';
+        const historyBody = document.getElementById('historyBody');
+        const summaryEl = document.getElementById('summary');
 
-    function loadHistory() {
-        return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-    }
-
-    function formatDate(iso) {
-        return new Date(iso).toLocaleString('ko-KR');
-    }
-
-    function render() {
-        const rows = loadHistory();
-
-        if (rows.length === 0) {
-            historyBody.innerHTML = '<tr><td class="empty" colspan="5">아직 풀이 이력이 없습니다. 먼저 암산 연습을 해보세요.</td></tr>';
-            summaryEl.textContent = '총 0문제 · 정답률 0%';
-            return;
+        function loadHistory() {
+            return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
         }
 
-        const correctCount = rows.filter((item) => item.correct).length;
-        const accuracy = Math.round((correctCount / rows.length) * 100);
-        summaryEl.textContent = `총 ${rows.length}문제 · 정답 ${correctCount}문제 · 정답률 ${accuracy}%`;
+        function formatDate(iso) {
+            const date = new Date(iso);
+            return `${date.getMonth() + 1}/${date.getDate()} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+        }
 
-        historyBody.innerHTML = rows.map((item) => `
-            <tr>
-                <td>${formatDate(item.createdAt)}</td>
-                <td>${item.left} × ${item.right}</td>
-                <td>${item.answer}</td>
-                <td>${item.expected}</td>
-                <td class="${item.correct ? 'ok' : 'bad'}">${item.correct ? '정답' : '오답'}</td>
-            </tr>
-        `).join('');
-    }
+        function render() {
+            const rows = loadHistory();
 
-    document.getElementById('clearBtn').addEventListener('click', () => {
-        localStorage.removeItem(STORAGE_KEY);
+            if (rows.length === 0) {
+                historyBody.innerHTML = '<tr><td colspan="5" class="empty-state">아직 풀이 이력이 없습니다. 연습을 시작해보세요!</td></tr>';
+                summaryEl.textContent = '0문제 완료';
+                return;
+            }
+
+            const correctCount = rows.filter((item) => item.correct).length;
+            const accuracy = Math.round((correctCount / rows.length) * 100);
+            summaryEl.textContent = `총 ${rows.length}문제 · 정답률 ${accuracy}%`;
+
+            historyBody.innerHTML = rows.map((item) => `
+                <tr>
+                    <td class="time-col">${formatDate(item.createdAt)}</td>
+                    <td class="problem-col">${item.left} × ${item.right}</td>
+                    <td>${item.answer}</td>
+                    <td>${item.expected}</td>
+                    <td>
+                        <span class="badge ${item.correct ? 'badge-success' : 'badge-error'}">
+                            ${item.correct ? '정답' : '오답'}
+                        </span>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        document.getElementById('clearBtn').addEventListener('click', () => {
+            if (confirm('모든 이력을 삭제하시겠습니까?')) {
+                localStorage.removeItem(STORAGE_KEY);
+                render();
+            }
+        });
+
         render();
-    });
-
-    render();
-</script>
+    </script>
 </body>
 </html>
