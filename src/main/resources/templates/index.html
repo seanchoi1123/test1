@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2자리수 곱셈 암산 연습</title>
+    <style>
+        :root {
+            color-scheme: light;
+        }
+
+        body {
+            font-family: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(120deg, #ecfeff, #eff6ff);
+            color: #0f172a;
+        }
+
+        .app {
+            width: min(520px, 92vw);
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.15);
+            padding: 28px;
+        }
+
+        h1 {
+            margin-top: 0;
+            margin-bottom: 4px;
+            font-size: 1.6rem;
+        }
+
+        .hint {
+            margin-top: 0;
+            color: #475569;
+            font-size: 0.95rem;
+        }
+
+        .problem {
+            margin: 24px 0;
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        input[type="number"] {
+            flex: 1;
+            padding: 12px;
+            font-size: 1rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+        }
+
+        button {
+            border: none;
+            background: #2563eb;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        button.secondary {
+            background: #0f766e;
+            margin-top: 12px;
+            width: 100%;
+        }
+
+        #result {
+            margin-top: 16px;
+            min-height: 24px;
+            font-weight: 600;
+        }
+
+        .ok {
+            color: #166534;
+        }
+
+        .bad {
+            color: #b91c1c;
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+    <h1>2자리수 곱셈 암산</h1>
+    <p class="hint">10~99 사이 숫자 두 개를 보고 빠르게 곱해보세요.</p>
+
+    <div id="problem" class="problem">문제 불러오는 중...</div>
+
+    <div class="controls">
+        <input id="answer" type="number" placeholder="정답 입력" autocomplete="off">
+        <button id="checkBtn" type="button">채점</button>
+    </div>
+
+    <button id="nextBtn" class="secondary" type="button">다음 문제</button>
+
+    <div id="result"></div>
+</div>
+
+<script>
+    const problemEl = document.getElementById('problem');
+    const answerEl = document.getElementById('answer');
+    const resultEl = document.getElementById('result');
+
+    let currentLeft = 0;
+    let currentRight = 0;
+
+    async function loadProblem() {
+        const response = await fetch('/api/problem');
+        const data = await response.json();
+
+        currentLeft = data.left;
+        currentRight = data.right;
+
+        problemEl.textContent = `${currentLeft} × ${currentRight} = ?`;
+        resultEl.textContent = '';
+        resultEl.className = '';
+        answerEl.value = '';
+        answerEl.focus();
+    }
+
+    async function checkAnswer() {
+        const answer = Number(answerEl.value);
+
+        if (!Number.isInteger(answer)) {
+            resultEl.textContent = '정수를 입력해주세요.';
+            resultEl.className = 'bad';
+            return;
+        }
+
+        const response = await fetch('/api/check', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({left: currentLeft, right: currentRight, answer})
+        });
+
+        const data = await response.json();
+
+        resultEl.textContent = data.correct
+            ? `${data.message}`
+            : `${data.message} 정답은 ${data.expected} 입니다.`;
+        resultEl.className = data.correct ? 'ok' : 'bad';
+    }
+
+    document.getElementById('checkBtn').addEventListener('click', checkAnswer);
+    document.getElementById('nextBtn').addEventListener('click', loadProblem);
+    answerEl.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            checkAnswer();
+        }
+    });
+
+    loadProblem();
+</script>
+</body>
+</html>
